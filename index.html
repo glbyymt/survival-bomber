@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サバイバル・ボマー</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <h1 class="game-title">サバイバル・ボマー</h1>
+      <p class="subtitle">爆風から逃げろ！最後の生き残りを目指せ！</p>
+      <div class="mode-select">
+        <h2>プレイ人数を選択</h2>
+        <div class="player-buttons">
+          <button class="btn btn-primary" data-players="1">1人<br><span class="btn-desc">タイムアタック</span></button>
+          <button class="btn btn-primary" data-players="2">2人<br><span class="btn-desc">対戦</span></button>
+          <button class="btn btn-primary" data-players="3">3人<br><span class="btn-desc">対戦</span></button>
+          <button class="btn btn-primary" data-players="4">4人<br><span class="btn-desc">対戦</span></button>
+        </div>
+      </div>
+      <div class="controls-info">
+        <h3>操作方法</h3>
+        <div class="controls-grid">
+          <div>
+            <strong>Player 1</strong><br>WASD
+          </div>
+          <div>
+            <strong>Player 2</strong><br>矢印キー
+          </div>
+          <div>
+            <strong>Player 3-4</strong><br>ゲームパッド
+          </div>
+        </div>
+        <p class="gamepad-status" id="gamepad-status">ゲームパッド: 検索中...</p>
+      </div>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-screen" class="screen">
+      <div id="hud"></div>
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <!-- リザルト画面 -->
+    <div id="result-screen" class="screen">
+      <h2 id="result-title">RESULT</h2>
+      <p id="result-message"></p>
+      <div class="result-buttons">
+        <button class="btn btn-secondary" id="btn-retry">もう一度遊ぶ</button>
+        <button class="btn btn-primary" id="btn-title">タイトルへ戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
