@@ -1,4 +1,5 @@
 import { CONFIG } from './config.js';
+import { getTouchInput, isMobile } from './mobile.js';
 
 const KEY_BINDINGS = [
   { up: 'KeyW', down: 'KeyS', left: 'KeyA', right: 'KeyD' },
@@ -65,6 +66,9 @@ function normalizeInput(x, y) {
 
 export function getPlayerInput(playerIndex, playerCount) {
   if (playerIndex === 0) {
+    if (isMobile()) {
+      return getTouchInput();
+    }
     const kb = readKeyboard(KEY_BINDINGS[0]);
     if (kb.x !== 0 || kb.y !== 0) return kb;
     return readGamepad(0);

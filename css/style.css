@@ -216,6 +216,59 @@ body {
   justify-content: center;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.mobile-tap-hint {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #48dbfb;
+  margin-top: 8px;
+  animation: tap-pulse 1.5s ease-in-out infinite;
+}
+
+.mobile-controls-desc {
+  text-align: center;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+@keyframes tap-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+body.is-mobile {
+  overflow: auto;
+  align-items: flex-start;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+body.is-mobile #app {
+  padding: 12px;
+  max-width: 100%;
+}
+
+body.is-mobile #game-screen {
+  width: 100%;
+}
+
+body.is-mobile #game-canvas {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+body.is-mobile .screen.active {
+  min-height: calc(100vh - 24px);
+  justify-content: center;
+}
+
+body.is-mobile #btn-title-mobile {
+  margin-top: 8px;
+}
+
 @media (max-width: 600px) {
   .game-title {
     font-size: 2rem;

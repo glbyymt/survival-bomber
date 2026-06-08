@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>サバイバル・ボマー</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -13,15 +13,17 @@
       <h1 class="game-title">サバイバル・ボマー</h1>
       <p class="subtitle">爆風から逃げろ！最後の生き残りを目指せ！</p>
       <div class="mode-select">
-        <h2>プレイ人数を選択</h2>
+        <h2 class="desktop-only">プレイ人数を選択</h2>
+        <h2 class="mobile-only hidden">タイムアタック</h2>
         <div class="player-buttons">
           <button class="btn btn-primary" data-players="1">1人<br><span class="btn-desc">タイムアタック</span></button>
-          <button class="btn btn-primary" data-players="2">2人<br><span class="btn-desc">対戦</span></button>
-          <button class="btn btn-primary" data-players="3">3人<br><span class="btn-desc">対戦</span></button>
-          <button class="btn btn-primary" data-players="4">4人<br><span class="btn-desc">対戦</span></button>
+          <button class="btn btn-primary desktop-only" data-players="2">2人<br><span class="btn-desc">対戦</span></button>
+          <button class="btn btn-primary desktop-only" data-players="3">3人<br><span class="btn-desc">対戦</span></button>
+          <button class="btn btn-primary desktop-only" data-players="4">4人<br><span class="btn-desc">対戦</span></button>
         </div>
+        <p class="mobile-tap-hint mobile-only hidden">画面をタップしてスタート</p>
       </div>
-      <div class="controls-info">
+      <div class="controls-info desktop-only">
         <h3>操作方法</h3>
         <div class="controls-grid">
           <div>
@@ -36,6 +38,10 @@
         </div>
         <p class="gamepad-status" id="gamepad-status">ゲームパッド: 検索中...</p>
       </div>
+      <div class="controls-info mobile-only hidden">
+        <h3>操作方法</h3>
+        <p class="mobile-controls-desc">スワイプで上下左右に移動</p>
+      </div>
     </div>
 
     <!-- ゲーム画面 -->
@@ -48,10 +54,12 @@
     <div id="result-screen" class="screen">
       <h2 id="result-title">RESULT</h2>
       <p id="result-message"></p>
-      <div class="result-buttons">
+      <div class="result-buttons desktop-only">
         <button class="btn btn-secondary" id="btn-retry">もう一度遊ぶ</button>
         <button class="btn btn-primary" id="btn-title">タイトルへ戻る</button>
       </div>
+      <p class="mobile-tap-hint mobile-only hidden">タップでもう一度遊ぶ</p>
+      <button class="btn btn-secondary mobile-only hidden" id="btn-title-mobile">タイトルへ戻る</button>
     </div>
   </div>
 

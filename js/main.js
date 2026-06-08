@@ -2,6 +2,12 @@ import { initInput, updateGamepadStatus } from './input.js';
 import { unlockAudio } from './audio.js';
 import { Game } from './game.js';
 import { Renderer } from './renderer.js';
+import {
+  isMobile,
+  applyMobileLayout,
+  initTouchMovement,
+  bindTap,
+} from './mobile.js';
 
 const screens = {
   title: document.getElementById('title-screen'),
@@ -110,30 +116,55 @@ function showResult() {
   showScreen('result');
 }
 
+function goToTitle() {
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  game = null;
+  showScreen('title');
+}
+
 function init() {
   initInput();
 
+  const mobile = isMobile();
+  if (mobile) {
+    applyMobileLayout();
+    initTouchMovement(canvas);
+    bindTap(screens.title, () => startGame(1));
+    bindTap(screens.result, (e) => {
+      if (e.target.closest('#btn-title-mobile')) return;
+      startGame(1);
+    });
+
+    const btnTitleMobile = document.getElementById('btn-title-mobile');
+    if (btnTitleMobile) {
+      btnTitleMobile.addEventListener('click', goToTitle);
+    }
+  }
+
   document.querySelectorAll('[data-players]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      startGame(parseInt(btn.dataset.players, 10));
+      const count = parseInt(btn.dataset.players, 10);
+      if (mobile && count !== 1) return;
+      startGame(count);
     });
   });
 
-  document.getElementById('btn-retry').addEventListener('click', () => {
-    startGame(playerCount);
-  });
+  const btnRetry = document.getElementById('btn-retry');
+  if (btnRetry) {
+    btnRetry.addEventListener('click', () => startGame(playerCount));
+  }
 
-  document.getElementById('btn-title').addEventListener('click', () => {
-    if (animFrameId) cancelAnimationFrame(animFrameId);
-    game = null;
-    showScreen('title');
-  });
+  const btnTitle = document.getElementById('btn-title');
+  if (btnTitle) {
+    btnTitle.addEventListener('click', goToTitle);
+  }
 
-  window.addEventListener('gamepadconnected', () => updateGamepadStatus(gamepadStatus));
-  window.addEventListener('gamepaddisconnected', () => updateGamepadStatus(gamepadStatus));
-
-  updateGamepadStatus(gamepadStatus);
-  setInterval(() => updateGamepadStatus(gamepadStatus), 1000);
+  if (!mobile) {
+    window.addEventListener('gamepadconnected', () => updateGamepadStatus(gamepadStatus));
+    window.addEventListener('gamepaddisconnected', () => updateGamepadStatus(gamepadStatus));
+    updateGamepadStatus(gamepadStatus);
+    setInterval(() => updateGamepadStatus(gamepadStatus), 1000);
+  }
 
   showScreen('title');
 }
