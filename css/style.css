@@ -260,6 +260,49 @@ body.is-mobile #game-canvas {
   user-select: none;
 }
 
+#mobile-joystick {
+  position: fixed;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.joystick-base {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.joystick-base.active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(72, 219, 251, 0.5);
+}
+
+.joystick-knob {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #48dbfb, #0abde3);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transition: box-shadow 0.1s;
+}
+
+.joystick-base.active .joystick-knob {
+  box-shadow: 0 4px 16px rgba(72, 219, 251, 0.6);
+}
+
 body.is-mobile .screen.active {
   min-height: calc(100vh - 24px);
   justify-content: center;

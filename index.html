@@ -40,7 +40,7 @@
       </div>
       <div class="controls-info mobile-only hidden">
         <h3>操作方法</h3>
-        <p class="mobile-controls-desc">スワイプで上下左右に移動</p>
+        <p class="mobile-controls-desc">画面下のつまみを引っ張って移動</p>
       </div>
     </div>
 
@@ -48,6 +48,11 @@
     <div id="game-screen" class="screen">
       <div id="hud"></div>
       <canvas id="game-canvas"></canvas>
+      <div id="mobile-joystick" class="hidden">
+        <div class="joystick-base" id="joystick-base">
+          <div class="joystick-knob" id="joystick-knob"></div>
+        </div>
+      </div>
     </div>
 
     <!-- リザルト画面 -->

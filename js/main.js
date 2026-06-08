@@ -5,7 +5,8 @@ import { Renderer } from './renderer.js';
 import {
   isMobile,
   applyMobileLayout,
-  initTouchMovement,
+  initVirtualJoystick,
+  setJoystickVisible,
   bindTap,
 } from './mobile.js';
 
@@ -29,6 +30,10 @@ let lastTime = 0;
 function showScreen(name) {
   Object.values(screens).forEach((s) => s.classList.remove('active'));
   screens[name].classList.add('active');
+
+  if (isMobile()) {
+    setJoystickVisible(name === 'game');
+  }
 }
 
 function startGame(count) {
@@ -128,7 +133,7 @@ function init() {
   const mobile = isMobile();
   if (mobile) {
     applyMobileLayout();
-    initTouchMovement(canvas);
+    initVirtualJoystick();
     bindTap(screens.title, () => startGame(1));
     bindTap(screens.result, (e) => {
       if (e.target.closest('#btn-title-mobile')) return;

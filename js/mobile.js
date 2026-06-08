@@ -1,12 +1,10 @@
-const SWIPE_THRESHOLD = 24;
 const TAP_THRESHOLD = 12;
 const TAP_MAX_DURATION = 400;
+const JOYSTICK_DEADZONE = 0.15;
 
 let touchInput = { x: 0, y: 0 };
-let touchStartX = 0;
-let touchStartY = 0;
-let touchStartTime = 0;
-let swipeDetected = false;
+let joystickMaxRadius = 36;
+let activePointerId = null;
 
 export function isMobile() {
   return (
@@ -19,46 +17,90 @@ export function getTouchInput() {
   return touchInput;
 }
 
-export function initTouchMovement(element) {
-  if (!element) return;
+export function setJoystickVisible(visible) {
+  const joy = document.getElementById('mobile-joystick');
+  if (joy) joy.classList.toggle('hidden', !visible);
+  if (!visible) resetJoystick();
+}
 
-  const onStart = (e) => {
-    if (e.touches.length !== 1) return;
-    const t = e.touches[0];
-    touchStartX = t.clientX;
-    touchStartY = t.clientY;
-    touchStartTime = Date.now();
-    swipeDetected = false;
-    touchInput = { x: 0, y: 0 };
+export function initVirtualJoystick() {
+  const base = document.getElementById('joystick-base');
+  const knob = document.getElementById('joystick-knob');
+  if (!base || !knob) return;
+
+  const updateMaxRadius = () => {
+    const baseRect = base.getBoundingClientRect();
+    const knobRect = knob.getBoundingClientRect();
+    joystickMaxRadius = Math.max(20, (baseRect.width - knobRect.width) / 2);
   };
 
-  const onMove = (e) => {
-    if (e.touches.length !== 1) return;
-    e.preventDefault();
+  updateMaxRadius();
+  window.addEventListener('resize', updateMaxRadius);
 
-    const t = e.touches[0];
-    const dx = t.clientX - touchStartX;
-    const dy = t.clientY - touchStartY;
+  const updateFromPointer = (clientX, clientY) => {
+    const rect = base.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
-    if (Math.abs(dx) < SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_THRESHOLD) return;
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
+    const dist = Math.hypot(dx, dy);
 
-    swipeDetected = true;
-    if (Math.abs(dx) >= Math.abs(dy)) {
-      touchInput = { x: dx > 0 ? 1 : -1, y: 0 };
-    } else {
-      touchInput = { x: 0, y: dy > 0 ? 1 : -1 };
+    if (dist > joystickMaxRadius) {
+      dx = (dx / dist) * joystickMaxRadius;
+      dy = (dy / dist) * joystickMaxRadius;
     }
+
+    knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+
+    const nx = dx / joystickMaxRadius;
+    const ny = dy / joystickMaxRadius;
+    const magnitude = Math.hypot(nx, ny);
+
+    if (magnitude < JOYSTICK_DEADZONE) {
+      touchInput = { x: 0, y: 0 };
+      return;
+    }
+
+    touchInput = { x: nx, y: ny };
   };
 
-  const onEnd = () => {
-    touchInput = { x: 0, y: 0 };
-    swipeDetected = false;
+  const onPointerDown = (e) => {
+    if (activePointerId !== null) return;
+    activePointerId = e.pointerId;
+    base.setPointerCapture(e.pointerId);
+    base.classList.add('active');
+    updateFromPointer(e.clientX, e.clientY);
+    e.preventDefault();
   };
 
-  element.addEventListener('touchstart', onStart, { passive: true });
-  element.addEventListener('touchmove', onMove, { passive: false });
-  element.addEventListener('touchend', onEnd, { passive: true });
-  element.addEventListener('touchcancel', onEnd, { passive: true });
+  const onPointerMove = (e) => {
+    if (e.pointerId !== activePointerId) return;
+    updateFromPointer(e.clientX, e.clientY);
+    e.preventDefault();
+  };
+
+  const onPointerEnd = (e) => {
+    if (e.pointerId !== activePointerId) return;
+    activePointerId = null;
+    base.classList.remove('active');
+    resetJoystick();
+  };
+
+  base.addEventListener('pointerdown', onPointerDown);
+  base.addEventListener('pointermove', onPointerMove);
+  base.addEventListener('pointerup', onPointerEnd);
+  base.addEventListener('pointercancel', onPointerEnd);
+}
+
+function resetJoystick() {
+  const knob = document.getElementById('joystick-knob');
+  if (knob) knob.style.transform = 'translate(-50%, -50%)';
+  touchInput = { x: 0, y: 0 };
+  activePointerId = null;
+
+  const base = document.getElementById('joystick-base');
+  if (base) base.classList.remove('active');
 }
 
 export function bindTap(element, callback) {
@@ -106,4 +148,6 @@ export function applyMobileLayout() {
 
   const mobileOnly = document.querySelectorAll('.mobile-only');
   mobileOnly.forEach((el) => el.classList.remove('hidden'));
+
+  setJoystickVisible(false);
 }
